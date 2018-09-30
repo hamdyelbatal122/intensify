@@ -1,2 +1,2 @@
 # intensify
-web site  templated  bulid by Html CSS JS 
+web site  template  bulid by Html CSS JS 
