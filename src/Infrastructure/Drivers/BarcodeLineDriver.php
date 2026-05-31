@@ -6,8 +6,6 @@ namespace Hamzi\PortFlow\Infrastructure\Drivers;
 
 use Hamzi\PortFlow\Domain\Contracts\SerialDriver;
 use Hamzi\PortFlow\Domain\DTO\SerialFrame;
-use Illuminate\Support\Facades\Cache;
-
 use Hamzi\PortFlow\Infrastructure\Drivers\Traits\HasBufferPersistence;
 
 final class BarcodeLineDriver implements SerialDriver

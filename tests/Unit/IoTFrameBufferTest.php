@@ -40,24 +40,49 @@ final class IoTFrameBufferTest extends TestCase
         $this->assertSame(['hello', 'world'], $second);
     }
 
-    public function test_it_truncates_when_max_bytes_exceeded(): void
+    public function test_it_truncates_buffer_when_max_bytes_exceeded(): void
     {
-        // Buffer with small max size
         $buffer = new IoTFrameBuffer("\n", 10);
 
-        // Pushing large chunk exceeding max bytes
-        $frames = $buffer->push("abcdefghijklmnop\n");
-
-        // The chunk should be processed and empty because of truncation or strict limits
+        // Push 16 bytes without delimiter — buffer truncates to last 10
+        $frames = $buffer->push('abcdefghijklmnop');
         $this->assertSame([], $frames);
-        $this->assertSame('', $buffer->push(''));
+
+        // The buffer should now contain 'ghijklmnop' (last 10 bytes)
+        $remainder = $buffer->flushRemainder();
+        $this->assertSame('ghijklmnop', $remainder);
     }
 
-    public function test_it_handles_empty_delimiters_safely(): void
+    public function test_flush_remainder_returns_pending_bytes(): void
     {
-        $buffer = new IoTFrameBuffer('');
-        
-        $frames = $buffer->push("abc\n");
-        $this->assertSame(['abc\n'], $frames);
+        $buffer = new IoTFrameBuffer("\n");
+
+        $buffer->push('partial');
+        $remainder = $buffer->flushRemainder();
+
+        $this->assertSame('partial', $remainder);
+    }
+
+    public function test_flush_remainder_returns_null_on_empty(): void
+    {
+        $buffer = new IoTFrameBuffer("\n");
+
+        $remainder = $buffer->flushRemainder();
+
+        $this->assertNull($remainder);
+    }
+
+    public function test_get_state_and_set_state(): void
+    {
+        $buffer = new IoTFrameBuffer("\n");
+        $buffer->push('hello');
+
+        $state = $buffer->getState();
+
+        $buffer2 = new IoTFrameBuffer("\n");
+        $buffer2->setState($state);
+
+        $frames = $buffer2->push(" world\n");
+        $this->assertSame(['hello world'], $frames);
     }
 }

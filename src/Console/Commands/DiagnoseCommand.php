@@ -34,20 +34,20 @@ final class DiagnoseCommand extends Command
         $this->comment('1. Checking Cache Infrastructure for Delimiter Buffering...');
         $cacheDriver = config('cache.default', 'unknown');
         $cacheStatus = 'OK';
-        
+
         try {
             Cache::put('portflow.diagnose.temp', 'test', 10);
             $cacheWorking = Cache::get('portflow.diagnose.temp') === 'test';
             Cache::forget('portflow.diagnose.temp');
         } catch (\Throwable $e) {
             $cacheWorking = false;
-            $cacheStatus = 'FAILED (' . $e->getMessage() . ')';
+            $cacheStatus = 'FAILED ('.$e->getMessage().')';
         }
 
         $this->table(
             ['Infrastructure Component', 'Value / Type', 'Status'],
             [
-                ['Laravel Cache Driver', $cacheDriver, $cacheWorking ? '<info>ACTIVE</info>' : '<error>' . $cacheStatus . '</error>'],
+                ['Laravel Cache Driver', $cacheDriver, $cacheWorking ? '<info>ACTIVE</info>' : '<error>'.$cacheStatus.'</error>'],
                 ['Baud Rate Default', config('portflow.default_baud', 9600), '<info>OK</info>'],
                 ['Queue Routing', config('portflow.queue_routing', false) ? 'Enabled (Async)' : 'Disabled (Sync)', '<info>OK</info>'],
             ]
@@ -128,7 +128,7 @@ final class DiagnoseCommand extends Command
 
         $this->newLine();
         $this->components->twoColumnDetail('Diagnostics Summary', '<info>ALL CHECKS PASSED</info>');
-        
+
         return self::SUCCESS;
     }
 }

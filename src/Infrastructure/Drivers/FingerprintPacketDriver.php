@@ -7,7 +7,6 @@ namespace Hamzi\PortFlow\Infrastructure\Drivers;
 use Hamzi\PortFlow\Domain\Contracts\SerialDriver;
 use Hamzi\PortFlow\Domain\DTO\SerialFrame;
 use Hamzi\PortFlow\Infrastructure\Drivers\Traits\HasBufferPersistence;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 final class FingerprintPacketDriver implements SerialDriver

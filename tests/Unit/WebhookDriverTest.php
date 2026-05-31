@@ -28,13 +28,13 @@ final class WebhookDriverTest extends TestCase
             'headers' => ['Authorization' => 'Bearer token123'],
         ]);
 
-        $frames = $driver->parseInbound(json_encode(['sensor' => 'temp', 'value' => 24.5]));
+        $frames = $driver->parseInbound((string) json_encode(['sensor' => 'temp', 'value' => 24.5]));
 
         $this->assertCount(1, $frames);
         $this->assertTrue($frames[0]->payload['success']);
         $this->assertSame(200, $frames[0]->payload['status_code']);
         $this->assertSame(['status' => 'received'], $frames[0]->payload['response']);
-        
+
         Http::assertSent(function ($request) {
             return $request->url() === 'https://example.com/api/ingest'
                 && $request->hasHeader('Authorization', 'Bearer token123')
