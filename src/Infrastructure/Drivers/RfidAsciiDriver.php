@@ -6,10 +6,13 @@ namespace Hamzi\PortFlow\Infrastructure\Drivers;
 
 use Hamzi\PortFlow\Domain\Contracts\SerialDriver;
 use Hamzi\PortFlow\Domain\DTO\SerialFrame;
+use Hamzi\PortFlow\Infrastructure\Drivers\Traits\HasBufferPersistence;
 use Illuminate\Support\Facades\Cache;
 
 final class RfidAsciiDriver implements SerialDriver
 {
+    use HasBufferPersistence;
+
     private string $stx = "\x02";
 
     private string $etx = "\x03";
@@ -53,7 +56,7 @@ final class RfidAsciiDriver implements SerialDriver
      */
     public function parseInbound(string $chunk, array $context = []): array
     {
-        [$buffer, $cacheKey] = $this->loadBuffer($context);
+        [$buffer, $cacheKey] = $this->loadBuffer($context, 'rfid');
         $buffer .= $chunk;
 
         $frames = [];
@@ -95,28 +98,5 @@ final class RfidAsciiDriver implements SerialDriver
         $this->storeBuffer($cacheKey, $buffer);
 
         return $frames;
-    }
-
-    /**
-     * @param  array<string, mixed>  $context
-     * @return array{0: string, 1: ?string}
-     */
-    private function loadBuffer(array $context): array
-    {
-        $sessionId = isset($context['session_id']) ? (string) $context['session_id'] : null;
-        if ($sessionId === null || $sessionId === '') {
-            return ['', null];
-        }
-
-        $cacheKey = 'portflow.rfid.buf.'.hash('sha256', $sessionId);
-
-        return [(string) Cache::get($cacheKey, ''), $cacheKey];
-    }
-
-    private function storeBuffer(?string $cacheKey, string $buffer): void
-    {
-        if ($cacheKey !== null) {
-            Cache::put($cacheKey, $buffer, 300);
-        }
     }
 }

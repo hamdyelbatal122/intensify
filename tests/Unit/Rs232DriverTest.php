@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Hamzi\PortFlow\Tests\Unit;
 
 use Hamzi\PortFlow\Infrastructure\Drivers\Rs232Driver;
-use PHPUnit\Framework\TestCase;
+use Hamzi\PortFlow\Tests\TestCase;
 
 final class Rs232DriverTest extends TestCase
 {
@@ -63,5 +63,22 @@ final class Rs232DriverTest extends TestCase
         $result = $driver->encodeOutbound('COMMAND');
 
         $this->assertSame("COMMAND\r\n", $result);
+    }
+
+    public function test_it_keeps_partial_payload_until_completed_with_context(): void
+    {
+        $driver = new Rs232Driver;
+        $driver->configure(['delimiter' => "\n"]);
+        $context = ['session_id' => 'rs232-test-session'];
+
+        // First partial chunk
+        $first = $driver->parseInbound('15.4;k', $context);
+        $this->assertCount(0, $first);
+
+        // Second completing chunk
+        $second = $driver->parseInbound("g;SCALE2\n", $context);
+        $this->assertCount(1, $second);
+        $this->assertSame('15.4', $second[0]->payload['weight']);
+        $this->assertSame(['15.4', 'kg', 'SCALE2'], $second[0]->payload['segments']);
     }
 }

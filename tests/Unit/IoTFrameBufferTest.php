@@ -28,4 +28,36 @@ final class IoTFrameBufferTest extends TestCase
         $this->assertSame([], $first);
         $this->assertSame(['abc123'], $second);
     }
+
+    public function test_it_handles_multi_character_delimiters(): void
+    {
+        $buffer = new IoTFrameBuffer("\r\n");
+
+        $first = $buffer->push("hello\r");
+        $second = $buffer->push("\nworld\r\n");
+
+        $this->assertSame([], $first);
+        $this->assertSame(['hello', 'world'], $second);
+    }
+
+    public function test_it_truncates_when_max_bytes_exceeded(): void
+    {
+        // Buffer with small max size
+        $buffer = new IoTFrameBuffer("\n", 10);
+
+        // Pushing large chunk exceeding max bytes
+        $frames = $buffer->push("abcdefghijklmnop\n");
+
+        // The chunk should be processed and empty because of truncation or strict limits
+        $this->assertSame([], $frames);
+        $this->assertSame('', $buffer->push(''));
+    }
+
+    public function test_it_handles_empty_delimiters_safely(): void
+    {
+        $buffer = new IoTFrameBuffer('');
+        
+        $frames = $buffer->push("abc\n");
+        $this->assertSame(['abc\n'], $frames);
+    }
 }

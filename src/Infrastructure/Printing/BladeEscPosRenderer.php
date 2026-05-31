@@ -20,7 +20,7 @@ final class BladeEscPosRenderer
         $builder = new EscPosBuilder;
 
         foreach (preg_split('/\r\n|\r|\n/', $content) ?: [] as $line) {
-            $builder->text(trim((string) $line));
+            $builder->text(rtrim((string) $line));
         }
 
         return $builder->feed(2)->cut()->bytes();

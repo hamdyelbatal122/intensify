@@ -9,6 +9,7 @@ use Hamzi\PortFlow\Application\Services\HardwareMessageService;
 use Hamzi\PortFlow\Application\Services\MessageRouter;
 use Hamzi\PortFlow\Console\Commands\ListenSerialCommand;
 use Hamzi\PortFlow\Console\Commands\MakeDriverCommand;
+use Hamzi\PortFlow\Console\Commands\DiagnoseCommand;
 use Hamzi\PortFlow\Domain\Contracts\SerialDriver;
 use Hamzi\PortFlow\Exceptions\PortFlowException;
 use Hamzi\PortFlow\Infrastructure\Livewire\PortFlowConnector;
@@ -71,6 +72,7 @@ final class PortFlowServiceProvider extends ServiceProvider
             $this->commands([
                 MakeDriverCommand::class,
                 ListenSerialCommand::class,
+                DiagnoseCommand::class,
             ]);
         }
     }

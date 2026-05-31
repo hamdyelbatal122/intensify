@@ -6,11 +6,14 @@ namespace Hamzi\PortFlow\Infrastructure\Drivers;
 
 use Hamzi\PortFlow\Domain\Contracts\SerialDriver;
 use Hamzi\PortFlow\Domain\DTO\SerialFrame;
+use Hamzi\PortFlow\Infrastructure\Drivers\Traits\HasBufferPersistence;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 final class FingerprintPacketDriver implements SerialDriver
 {
+    use HasBufferPersistence;
+
     private string $startCode = "\xEF\x01";
 
     public function name(): string
@@ -78,7 +81,7 @@ final class FingerprintPacketDriver implements SerialDriver
      */
     public function parseInbound(string $chunk, array $context = []): array
     {
-        [$buffer, $cacheKey] = $this->loadBuffer($context);
+        [$buffer, $cacheKey] = $this->loadBuffer($context, 'fingerprint', true);
         $buffer .= $chunk;
 
         $frames = [];
@@ -152,7 +155,7 @@ final class FingerprintPacketDriver implements SerialDriver
             $frames[] = SerialFrame::now($this->name(), $payload, $context);
         }
 
-        $this->storeBuffer($cacheKey, $buffer);
+        $this->storeBuffer($cacheKey, $buffer, true);
 
         return $frames;
     }
@@ -166,34 +169,5 @@ final class FingerprintPacketDriver implements SerialDriver
             0x08 => 'end-data',
             default => 'unknown',
         };
-    }
-
-    /**
-     * @param  array<string, mixed>  $context
-     * @return array{0: string, 1: ?string}
-     */
-    private function loadBuffer(array $context): array
-    {
-        $sessionId = isset($context['session_id']) ? (string) $context['session_id'] : null;
-        if ($sessionId === null || $sessionId === '') {
-            return ['', null];
-        }
-
-        $cacheKey = 'portflow.fingerprint.buf.'.hash('sha256', $sessionId);
-        $state = (string) Cache::get($cacheKey, '');
-
-        // Binary packet data is stored as base64 to survive cache serialisation
-        // round-trips (e.g. file/database cache drivers that handle only UTF-8 strings).
-        $buffer = $state !== '' ? (base64_decode($state, true) ?: '') : '';
-
-        return [$buffer, $cacheKey];
-    }
-
-    private function storeBuffer(?string $cacheKey, string $buffer): void
-    {
-        if ($cacheKey !== null) {
-            // base64_encode ensures binary-safe storage across all cache drivers.
-            Cache::put($cacheKey, base64_encode($buffer), 300);
-        }
     }
 }

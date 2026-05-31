@@ -85,6 +85,14 @@ final class EscPosBuilder
         return $this;
     }
 
+    /** Reset the builder buffer. */
+    public function reset(): self
+    {
+        $this->buffer = "\x1B\x40";
+
+        return $this;
+    }
+
     /** Return the accumulated ESC/POS byte string. */
     public function bytes(): string
     {

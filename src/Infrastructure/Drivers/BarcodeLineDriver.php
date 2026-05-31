@@ -8,8 +8,12 @@ use Hamzi\PortFlow\Domain\Contracts\SerialDriver;
 use Hamzi\PortFlow\Domain\DTO\SerialFrame;
 use Illuminate\Support\Facades\Cache;
 
+use Hamzi\PortFlow\Infrastructure\Drivers\Traits\HasBufferPersistence;
+
 final class BarcodeLineDriver implements SerialDriver
 {
+    use HasBufferPersistence;
+
     private string $delimiter = "\n";
 
     /**
@@ -64,7 +68,7 @@ final class BarcodeLineDriver implements SerialDriver
      */
     public function parseInbound(string $chunk, array $context = []): array
     {
-        [$buffer, $cacheKey] = $this->loadBuffer($context);
+        [$buffer, $cacheKey] = $this->loadBuffer($context, 'barcode');
         $buffer .= $chunk;
 
         $frames = [];
@@ -108,28 +112,5 @@ final class BarcodeLineDriver implements SerialDriver
         }
 
         return trim($value);
-    }
-
-    /**
-     * @param  array<string, mixed>  $context
-     * @return array{0: string, 1: ?string}
-     */
-    private function loadBuffer(array $context): array
-    {
-        $sessionId = isset($context['session_id']) ? (string) $context['session_id'] : null;
-        if ($sessionId === null || $sessionId === '') {
-            return ['', null];
-        }
-
-        $cacheKey = 'portflow.barcode.buf.'.hash('sha256', $sessionId);
-
-        return [(string) Cache::get($cacheKey, ''), $cacheKey];
-    }
-
-    private function storeBuffer(?string $cacheKey, string $buffer): void
-    {
-        if ($cacheKey !== null) {
-            Cache::put($cacheKey, $buffer, 300);
-        }
     }
 }

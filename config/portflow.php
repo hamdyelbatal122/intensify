@@ -9,6 +9,7 @@ use Hamzi\PortFlow\Infrastructure\Drivers\FingerprintPacketDriver;
 use Hamzi\PortFlow\Infrastructure\Drivers\RawJsonDriver;
 use Hamzi\PortFlow\Infrastructure\Drivers\RfidAsciiDriver;
 use Hamzi\PortFlow\Infrastructure\Drivers\Rs232Driver;
+use Hamzi\PortFlow\Infrastructure\Drivers\WebhookDriver;
 
 return [
     'default_driver' => env('PORTFLOW_DEFAULT_DRIVER', 'raw-json'),
@@ -67,6 +68,7 @@ return [
         'fingerprint-packet' => FingerprintPacketDriver::class,
         'escpos' => EscPosDriver::class,
         'rs232' => Rs232Driver::class,
+        'webhook' => WebhookDriver::class,
     ],
 
     'driver_options' => [
@@ -91,6 +93,11 @@ return [
             'delimiter' => "\n",
         ],
         'escpos' => [],
+        'webhook' => [
+            'url' => env('PORTFLOW_WEBHOOK_URL', ''),
+            'method' => 'POST',
+            'headers' => [],
+        ],
     ],
 
     'mappings' => [

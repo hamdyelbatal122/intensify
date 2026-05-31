@@ -87,7 +87,7 @@ final class MessageRouter
         }
 
         if (! is_a($eventClass, SerialEvent::class, true)) {
-            Log::error("[PortFlow] Event [{$eventClass}] does not implement SerialEvent interface. Routing skipped. Add 'implements SerialEvent' to your event class.");
+            Log::warning("[PortFlow] Event [{$eventClass}] does not implement SerialEvent interface. Routing skipped. Add 'implements SerialEvent' to your event class.");
 
             return;
         }
