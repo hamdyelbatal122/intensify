@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.0](https://github.com/hamdyelbatal122/PortFlow/compare/v0.7.0...v0.8.0) (2026-07-26)
+
+
+### Features
+
+* add WebhookDriver, implement HasBufferPersistence trait, and expose driver registration via Facade ([e7d6206](https://github.com/hamdyelbatal122/PortFlow/commit/e7d6206b287785f8f02487fef50bbe957f6dfaad))
+* comprehensive security hardening, full test coverage, and professional contributing guide ([3ba32dc](https://github.com/hamdyelbatal122/PortFlow/commit/3ba32dcd5036ad6dcb4ef99c4cc233a6dac6c31e))
+* Laravel 13 support, PHP matrix CI, README corrections, PHPStan level 8 ([d7a46ef](https://github.com/hamdyelbatal122/PortFlow/commit/d7a46ef686e46ccb5a61d0c47cf2bec9ff311a3e))
+* professional hardening — rate limiting, queue routing, buffer persistence, reconnect, make:driver command, feature tests ([27e099c](https://github.com/hamdyelbatal122/PortFlow/commit/27e099c6f64b5f794d62e01c5e0f851d0d6efce1))
+* professional review — EscPosBuilder commands, SynapseException, clean tests, README overhaul ([bcc3075](https://github.com/hamdyelbatal122/PortFlow/commit/bcc307596eac00b69f86df9db62b765119f4898a))
+* rebuild as hamzi synapse laravel hardware bridge package ([07cd007](https://github.com/hamdyelbatal122/PortFlow/commit/07cd00761127efd31c8888707875d4d7d33ab9f9))
+* rename package Synapse to PortFlow ([f6ac6f4](https://github.com/hamdyelbatal122/PortFlow/commit/f6ac6f46cfc2e6ddb3cf49486da5b2d4d86a7c46))
+* update changelog for version 0.6.0 with security enhancements, new features, bug fixes, and increased test coverage ([942c47d](https://github.com/hamdyelbatal122/PortFlow/commit/942c47d5dccd5124cbd83dcff703fa30f946021c))
+
+
+### Bug Fixes
+
+* add typed array PHPDoc annotations — resolves all 24 PHPStan errors ([5c6bf6e](https://github.com/hamdyelbatal122/PortFlow/commit/5c6bf6eafcab60091e2875a24138894bc0005e7d))
+* **phpstan:** remove redundant ?? null on non-empty-list offset ([5476721](https://github.com/hamdyelbatal122/PortFlow/commit/5476721acc2c280b532bd55b878e668a209eb649))
+* remove duplicate file content + add browser compatibility support ([6892f9d](https://github.com/hamdyelbatal122/PortFlow/commit/6892f9dbd9b3756b31ec85db81f7f499b2ccf7d3))
+* resolve all Pint code-style violations (CI Quality job) ([b593e9f](https://github.com/hamdyelbatal122/PortFlow/commit/b593e9f33c93422ba974e4bad859571a84b481f3))
+* resolve PHPStan errors in MakeDriverCommand + comprehensive README rewrite ([af2e86b](https://github.com/hamdyelbatal122/PortFlow/commit/af2e86b00656f3b8d05eff58bd0554d2d277dc60))
+
 ## [0.7.0] — 2026-05-31
 
 ### Features
